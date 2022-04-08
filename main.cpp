@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include "window.h"
 #include "TextBox.h"
-#include "Encription.cpp"
+#include "Encryption.cpp"
 
 using namespace std;
 using namespace sf;
@@ -19,15 +19,14 @@ const string* TEXT = new string[NumberButton]
 				"Caesar cipher", "Vernam cipher", "Hill cipher", 
 				"Vigenere cipher", "Gronsfeld cipher", "RSA" };
 
-struct MyChoice { string MyChoice; };
+struct MyChoice { string MyChoice; }MyChoice;
 
 int main()
 {
 	window.setFramerateLimit(30);
 
-	MyChoice MyChoice; //struct
 	TextBox InputBox(50, 90); //TextBox.h for input text
-	TextBox OutputBox(50, 330);
+	TextBox OutputBox(50, 305);
 	
 	backgroundTexture.loadFromFile("texture/background.jpg"); //set background
 	backgroundSprite.setTexture(backgroundTexture);
@@ -131,26 +130,25 @@ int main()
 
 
 		if (time[1] >= 4)
-			if (event.type == Event::MouseButtonPressed) // Encryption
+			if (event.type == Event::MouseButtonPressed)
 			{
-				if (IntRect(text[2].getGlobalBounds()).contains(Mouse::getPosition(window)))
+				if (IntRect(text[2].getGlobalBounds()).contains(Mouse::getPosition(window)))// Encryption
 				{
-					OutputBox.setString(*ENCRYPTION.Distributor(true));
+					OutputBox.setText(*ENCRYPTION.Distributor(true)); OutputBox.setString();
+					//OutputBox.setString(*ENCRYPTION.Distributor(true));
 					text[2].setStyle(Text::Bold);
 					time[1] = 0;
 				}
 
-
-				if (event.type == Event::MouseButtonPressed) // Decryption
+				if (IntRect(text[3].getGlobalBounds()).contains(Mouse::getPosition(window)))// Decryption
 				{
-					if (IntRect(text[3].getGlobalBounds()).contains(Mouse::getPosition(window)))
-					{
-						OutputBox.setString(*ENCRYPTION.Distributor(false));
-						text[3].setStyle(Text::Bold);
-						time[1] = 0;
-					}
+					OutputBox.setText(*ENCRYPTION.Distributor(false)); OutputBox.setString();
+					//OutputBox.setString(*ENCRYPTION.Distributor(false));
+					text[3].setStyle(Text::Bold);
+					time[1] = 0;
 				}
-			}
+
+			} 
 		window.display();
 	}
 	return 0;

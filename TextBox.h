@@ -7,7 +7,7 @@ using namespace std;
 using namespace sf;
 
 /*
-*	TextBox modele 
+*	TextBox module 
 */
 
 #define lensize 168
@@ -32,6 +32,7 @@ public:
 	}
 
 	wstring* getText() { return &input; }
+	wstring* setText(wstring text) { input = text; }
 
 	wstring textEditor()
 	{
@@ -62,7 +63,7 @@ public:
 	}
 
 	void setString() { textbox.setString(TextBox::textEditor()); }
-	void setString(wstring str) { textbox.setString(str); }
+	//void setString(wstring str) { textbox.setString(str); }
 
 	void inputText(wchar_t i)
 	{

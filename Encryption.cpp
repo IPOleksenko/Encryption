@@ -1,6 +1,9 @@
+#pragma once
+
 #include <iostream>
-#include <stdio.h>
+//#include <stdio.h>
 #include <string>
+//#include "TextBox.h"
 
 using namespace std;
 
@@ -11,8 +14,9 @@ using namespace std;
 
 class ENCRYPTION
 {
-	wstring text{}, newtext{};
+	wstring text{}, newtext{}, key{};
 	string choice{};
+
 public:
 	ENCRYPTION(wstring* text, string choice)
 	{
@@ -20,62 +24,88 @@ public:
 		this->choice = choice;
 	}
 
-	wstring ECaesr()
+	void inputKey()
+	{
+
+		key = L"0";
+	}
+
+
+	wstring Caesar(bool i)
 	{
 
 		return text;
 	}
-	wstring DCaesr()
+
+	wstring Vernam(bool i)
 	{
 
 		return text;
 	}
 
+
+	wstring Hill(bool i)
+	{
+		return text;
+	}
+
+
+	wstring Vigenere(bool i)
+	{
+		return text;
+	}
+
+
+	wstring Gronsfeld(bool i)
+	{
+		return text;
+	}
+
+	wstring RSA(bool i)
+	{
+		return text;
+	}
+
+	
 	wstring* Distributor(bool i)
 	{
 		if (choice == "Caesar cipher")
 		{
-			if (i) return &ENCRYPTION::ECaesr();
-			else return &ENCRYPTION::DCaesr();
+			return &ENCRYPTION::Caesar(i);
 		}
 
 		if (choice == "Vernam cipher")
 		{
 			{
-				if (i) return 0;
-				else return 0;
+				return &ENCRYPTION::Vernam(i);
 			}
 		}
 
 		if (choice == "Hill cipher")
 		{
 			{
-				if (i) return 0;
-				else return 0;
+				return &ENCRYPTION::Hill(i);
 			}
 		}
 
 		if (choice == "Vigenere cipher")
 		{
 			{
-				if (i) return 0;
-				else return 0;
+				return &ENCRYPTION::Vigenere(i);
 			}
 		}
 
 		if (choice == "Gronsfeld cipher")
 		{
 			{
-				if (i) return 0;
-				else return 0;
+				return &ENCRYPTION::Gronsfeld(i);
 			}
 		}
 
 		if (choice == "RSA")
 		{
 			{
-				if (i) return 0;
-				else return 0;
+				return &ENCRYPTION::RSA(i);
 			}
 		}
 	}
