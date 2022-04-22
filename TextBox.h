@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include "window.h"
 
 using namespace std;
 using namespace sf;
@@ -10,19 +9,19 @@ using namespace sf;
 *	TextBox module 
 */
 
-#define lensize 168
-
 class TextBox
 {
 	int x, y;
 	Font font{};
 	Text textbox{};
 	wstring input{};
+	int lensize{};
 public:
-	TextBox(int x = 0, int y = 0, string font = "font/font.ttf")
+	TextBox(int x = 0, int y = 0, int lensize = 168, string font = "font/font.ttf")
 	{
 		this->x = x;
 		this->y = y;
+		this->lensize = lensize;
 		this->font.loadFromFile(font);
 
 		textbox.setFont(this->font);
@@ -32,7 +31,7 @@ public:
 	}
 
 	wstring* getText() { return &input; }
-	wstring* setText(wstring text) { input = text; }
+	void setText(wstring text) { input = text; }
 
 	wstring textEditor()
 	{
@@ -63,7 +62,6 @@ public:
 	}
 
 	void setString() { textbox.setString(TextBox::textEditor()); }
-	//void setString(wstring str) { textbox.setString(str); }
 
 	void inputText(wchar_t i)
 	{

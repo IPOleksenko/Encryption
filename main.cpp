@@ -1,25 +1,29 @@
-﻿#include <iostream>
-#include "window.h"
+﻿#include "window.h"
 #include "TextBox.h"
-#include "Encryption.cpp"
+#include "Encryption.h"
 
 using namespace std;
 using namespace sf;
 
-#define NumberButton 11
+#define NumberButton 12
+#define NumberFrame 3
 
 Texture backgroundTexture; Sprite backgroundSprite;
-Texture frameTexture[2]; Sprite frameSprite[2];
+Texture frameTexture[NumberFrame]; Sprite frameSprite[NumberFrame];
 Image icon; Font font;
 
 Text text[NumberButton];
 const string* TEXT = new string[NumberButton]
-				{"Input: ", "Output: ",
+				{"Input: ", "Output: ", "Key: ",
 				"Encryption", "Decryption", 
 				"Caesar cipher", "Vernam cipher", "Hill cipher", 
 				"Vigenere cipher", "Gronsfeld cipher", "RSA" };
 
-struct MyChoice { string MyChoice; }MyChoice;
+struct MyChoice
+{
+	string MyChoice; 
+	wstring key;
+}MyChoice;
 
 int main()
 {
@@ -27,24 +31,35 @@ int main()
 
 	TextBox InputBox(50, 90); //TextBox.h for input text
 	TextBox OutputBox(50, 305);
-	
+	TextBox KeyInput(500.f, 400.f, 14);//заменить
+
 	backgroundTexture.loadFromFile("texture/background.jpg"); //set background
 	backgroundSprite.setTexture(backgroundTexture);
 	backgroundSprite.setScale(
 		window.getSize().x / backgroundSprite.getGlobalBounds().width,
 		window.getSize().y / backgroundSprite.getGlobalBounds().height);
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < NumberFrame; i++)
 	{
 		frameTexture[i].loadFromFile("texture/frame_" + to_string(i) + ".png"); //set frame
 		frameSprite[i].setTexture(frameTexture[i]);
-		frameSprite[i].setScale(
-			460 / frameSprite[i].getGlobalBounds().width,
-			175 / frameSprite[i].getGlobalBounds().height);
+		if (i < NumberFrame - 1)
+		{
+			frameSprite[i].setScale(
+				460 / frameSprite[i].getGlobalBounds().width,
+				175 / frameSprite[i].getGlobalBounds().height);
+		}
+		else
+		{
+			frameSprite[i].setScale(
+				200 / frameSprite[i].getGlobalBounds().width,
+				40 / frameSprite[i].getGlobalBounds().height);
+		}
 	}
 
-	frameSprite[0].setPosition(0, 110.f);
-	frameSprite[1].setPosition(0, 325.f);
+	frameSprite[0].setPosition(0.f, 110.f);
+	frameSprite[1].setPosition(0.f, 325.f);
+	frameSprite[2].setPosition(500.f, 425.f);
 
 	if (!icon.loadFromFile("texture/icon.png")) return EXIT_FAILURE; //load icon for window
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -59,19 +74,22 @@ int main()
 		text[i].setCharacterSize(24);
 		text[i].setFillColor(Color::Red);
 
-		if (i > 3 || i < NumberButton - 1) text[i].setPosition(500, 75 + ((i - 4) * 50));
+		if (i > 4) text[i].setPosition(500, 75 + ((i - 5) * 50));
 	}
 
-	text[0].setPosition(50, 75); //Input
-	text[1].setPosition(50, 290); //Output
+	text[0].setPosition(50.f, 75.f); //Input
+	text[1].setPosition(50.f, 290.f); //Output
+	text[2].setPosition(500.f, 390.f); //Key
 
-	text[2].setPosition(400, 500); //Encryption
-	text[3].setPosition(600, 500); //Decryption
 
-	MyChoice.MyChoice = TEXT[4];
+	text[3].setPosition(400.f, 500.f); //Encryption
+	text[4].setPosition(600.f, 500.f); //Decryption
+
+	MyChoice.MyChoice = TEXT[5];
 	text[NumberButton - 1].setPosition(10, 10);
 
 	int time[2] = { 3 , 3 };
+	bool WhichFrame = 0;
 
 	while (window.isOpen()) //drow sprite
 	{
@@ -79,7 +97,7 @@ int main()
 
 		text[NumberButton - 1].setString("Cipher: " + MyChoice.MyChoice);
 
-		ENCRYPTION ENCRYPTION(InputBox.getText(), MyChoice.MyChoice);
+		ENCRYPTION ENCRYPTION(InputBox.getText(), MyChoice.MyChoice, MyChoice.key);
 
 		Event event;
 
@@ -94,14 +112,15 @@ int main()
 		window.clear();
 		window.draw(backgroundSprite);
 
-		for (int i = 0; i < 2; i++) window.draw(frameSprite[i]);
+		for (int i = 0; i < NumberFrame; i++) window.draw(frameSprite[i]);
 
-		window.draw(InputBox.drawtextbox()); 
+		window.draw(InputBox.drawtextbox());
 		window.draw(OutputBox.drawtextbox());
+		window.draw(KeyInput.drawtextbox());
 
 		for (int i = 0; i < NumberButton; i++) { window.draw(text[i]); }
 
-		for (int i = 2; i < NumberButton - 1; i++)text[i].setStyle(Text::Regular);
+		for (int i = 3; i < NumberButton - 1; i++)text[i].setStyle(Text::Regular);
 
 
 		if (time[0] > 4)
@@ -110,45 +129,50 @@ int main()
 			{
 				if ((event.text.unicode < 128) || (1072 >= event.text.unicode <= 1103))
 				{
-					InputBox.inputText(static_cast<wchar_t>(event.text.unicode));
+					if (WhichFrame == 0)InputBox.inputText(static_cast<wchar_t>(event.text.unicode));
+					else if (WhichFrame == 1)KeyInput.inputText(static_cast<wchar_t>(event.text.unicode));
 					time[0] = 0;
 				}
 			}
 		}
 
-
-		for (int i = 4; i < NumberButton - 1; i++)
+		if (event.type == Event::MouseButtonPressed) // add TEXT[i] in struct MyChoice
 		{
-			if (event.type == Event::MouseButtonPressed) // add TEXT[i] in struct MyChoice
+			for (int i = 5; i < NumberButton - 1; i++)
 			{
 				if (IntRect(text[i].getGlobalBounds()).contains(Mouse::getPosition(window)))
 				{
 					MyChoice.MyChoice = TEXT[i]; text[i].setStyle(Text::Bold);
 				}
-			}
+			}		
 		}
 
+		if (Mouse::isButtonPressed(Mouse::Left)) // frameSprite[0]
+		{
+			if (frameSprite[0].getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window)))) WhichFrame = 0;
+			else if (frameSprite[2].getGlobalBounds().contains(window.mapPixelToCoords(Mouse::getPosition(window)))) WhichFrame = 1;
+		}
 
 		if (time[1] >= 4)
 			if (event.type == Event::MouseButtonPressed)
 			{
-				if (IntRect(text[2].getGlobalBounds()).contains(Mouse::getPosition(window)))// Encryption
+				if (IntRect(text[3].getGlobalBounds()).contains(Mouse::getPosition(window)))// Encryption
 				{
-					OutputBox.setText(*ENCRYPTION.Distributor(true)); OutputBox.setString();
-					//OutputBox.setString(*ENCRYPTION.Distributor(true));
-					text[2].setStyle(Text::Bold);
-					time[1] = 0;
-				}
-
-				if (IntRect(text[3].getGlobalBounds()).contains(Mouse::getPosition(window)))// Decryption
-				{
-					OutputBox.setText(*ENCRYPTION.Distributor(false)); OutputBox.setString();
-					//OutputBox.setString(*ENCRYPTION.Distributor(false));
+					OutputBox.setText(ENCRYPTION.Distributor(true));
+					OutputBox.setString();
 					text[3].setStyle(Text::Bold);
 					time[1] = 0;
 				}
 
-			} 
+				if (IntRect(text[4].getGlobalBounds()).contains(Mouse::getPosition(window)))// Decryption
+				{
+					OutputBox.setText(ENCRYPTION.Distributor(false));
+					OutputBox.setString();
+					text[4].setStyle(Text::Bold);
+					time[1] = 0;
+				}
+
+			}
 		window.display();
 	}
 	return 0;
