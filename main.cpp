@@ -174,7 +174,6 @@ int main()
 
 					time[0] = 0;
 				}
-				cout << symbolText << endl;	//			-			delete this
 			}
 		}
 

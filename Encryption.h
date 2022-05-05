@@ -30,12 +30,11 @@ public:
 
 	inline unsigned int toInteger(wstring x)
 	{
-		unsigned integer{};
-		for (unsigned int i : x)
-		{
-			integer = i - 48;
-		}
-		return integer;
+		unsigned int integer{};
+		if (key != L"")
+			return stoi(x);
+
+		return 0;
 	}
 
 	wstring& Caesar(bool mode) // Число- ключ сдвига
@@ -45,19 +44,23 @@ public:
 		wstring result{};
 
 		if (mode)
-		{
 			for (int i = 0; i < text.length(); i++)
 			{
-				if (isupper(text[i]))
-					result += char(int(text[i] + k - 65) % 26 + 65);
-				else
-					result += char(int(text[i] + k - 97) % 26 + 97);
+				{
+					if ((!(96 < text[i]) && !(text[i] > 122)) && (!(64 < text[i]) && !(text[i] > 90)))
+						result += text[i];
+					else if (isupper(text[i]))
+						result += char(int(text[i] + k - 65) % 26 + 65);
+					else
+						result += char(int(text[i] + k - 97) % 26 + 97);
+				}
 			}
-		}
 		else 
 		{
 			for (int i = 0; i < text.length(); i++)
 			{
+				if ((!(96 < text[i]) && !(text[i] > 122)) && (!(64 < text[i]) && !(text[i] > 90)))
+					result += text[i];
 				if (isupper(text[i]))
 					result += char(int(text[i] - k - 65) % 26 + 65);
 				else
