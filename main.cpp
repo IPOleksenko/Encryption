@@ -22,7 +22,6 @@ const string* TEXT = new string[NumberButton]
 struct MyChoice
 {
 	string MyChoice; 
-	wstring key;
 }MyChoice;
 
 int main()
@@ -93,11 +92,12 @@ int main()
 
 	while (window.isOpen()) //drow sprite
 	{
-		time[0]++; time[1]++;
+		if (time[0] <= 4 || time[1] <= 4)
+			time[0]++; time[1]++;
 
 		text[NumberButton - 1].setString("Cipher: " + MyChoice.MyChoice);
 
-		ENCRYPTION ENCRYPTION(InputBox.getText(), MyChoice.MyChoice, MyChoice.key);
+		ENCRYPTION ENCRYPTION(InputBox.getText(), MyChoice.MyChoice, KeyInput.getText());
 
 		Event event;
 
@@ -127,12 +127,54 @@ int main()
 		{
 			if (event.type == Event::TextEntered) // input text
 			{
-				if ((event.text.unicode < 128) || (1072 >= event.text.unicode <= 1103))
+				unsigned int symbolText = event.text.unicode;
+
+				if (WhichFrame == 0)
+					if ((symbolText < 128)) //  || (1072 >= event.text.unicode <= 1103)			-		for RUS and UKR language
+					{
+						{
+							InputBox.inputText(static_cast<wchar_t>(symbolText));
+						}
+						time[0] = 0;
+					}
+
+				if (WhichFrame == 1) // input key
 				{
-					if (WhichFrame == 0)InputBox.inputText(static_cast<wchar_t>(event.text.unicode));
-					else if (WhichFrame == 1)KeyInput.inputText(static_cast<wchar_t>(event.text.unicode));
+					if (MyChoice.MyChoice == "Caesar cipher")
+					{
+						if ((48 <= symbolText) && (symbolText <= 57) || symbolText == 8) {
+							KeyInput.inputText(static_cast<wchar_t>(symbolText));
+						}
+					}
+
+					else if (MyChoice.MyChoice == "Vernam cipher")
+					{
+						KeyInput.inputText(static_cast<wchar_t>(symbolText));
+					}
+
+					else if (MyChoice.MyChoice == "Hill cipher")	//	breake this
+					{
+						KeyInput.inputText(static_cast<wchar_t>(symbolText));
+					}
+
+					else if (MyChoice.MyChoice == "Vigenere cipher")
+					{
+						KeyInput.inputText(static_cast<wchar_t>(symbolText));
+					}
+
+					else if (MyChoice.MyChoice == "Gronsfeld cipher")
+					{
+						KeyInput.inputText(static_cast<wchar_t>(symbolText));
+					}
+
+					else if (MyChoice.MyChoice == "RSA")
+					{
+						KeyInput.inputText(static_cast<wchar_t>(symbolText));
+					}
+
 					time[0] = 0;
 				}
+				cout << symbolText << endl;	//			-			delete this
 			}
 		}
 
@@ -142,7 +184,10 @@ int main()
 			{
 				if (IntRect(text[i].getGlobalBounds()).contains(Mouse::getPosition(window)))
 				{
-					MyChoice.MyChoice = TEXT[i]; text[i].setStyle(Text::Bold);
+					MyChoice.MyChoice = TEXT[i]; 
+					text[i].setStyle(Text::Bold);
+					KeyInput.setText(L""); 
+					KeyInput.setString();
 				}
 			}		
 		}
@@ -171,8 +216,8 @@ int main()
 					text[4].setStyle(Text::Bold);
 					time[1] = 0;
 				}
-
 			}
+		
 		window.display();
 	}
 	return 0;
