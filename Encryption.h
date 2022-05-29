@@ -15,7 +15,7 @@ extern class TextBox;
 
 class ENCRYPTION
 {
-	wstring text{}, newtext{}, key{};
+	wstring text{}, key{};
 	string choice{};
 
 	TextBox InputKeyBox();
@@ -55,7 +55,7 @@ public:
 						result += char(int(text[i] + k - 97) % 26 + 97);
 				}
 			}
-		else 
+		else
 		{
 			for (int i = 0; i < text.length(); i++)
 			{
@@ -73,8 +73,23 @@ public:
 
 	wstring& Vernam(bool mode) // Ключ- текст
 	{
+		int i, j = 0, sum = 0;
+		wstring ans = L"";
 
-		return text;
+		if (key == L"")
+			return text;
+
+		int mod = key.size();
+		for (i = key.size(); i < text.size(); i++) {
+			key += key[j % mod];
+			j++;
+		}
+		for (i = 0; i < text.size(); i++) {
+			if (mode) { ans += (key[i] - L'A' + text[i] - L'A') % 26 + L'A'; }
+			else { ans += (text[i] - key[i] + 26) % 26 + L'A'; }
+		}
+
+		return ans;
 	}
 
 	wstring& Hill(bool mode) // Ключ- матрица
@@ -117,3 +132,5 @@ public:
 		if (choice == "RSA") { return ENCRYPTION::RSA(mode); }
 	}
 };
+
+//Author: IPOleksenko

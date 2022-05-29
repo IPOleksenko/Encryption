@@ -82,3 +82,5 @@ public:
 	Text drawtextbox() { return textbox; }
 
 };
+
+//Author: IPOleksenko
