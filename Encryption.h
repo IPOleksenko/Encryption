@@ -92,16 +92,20 @@ public:
 		return ans;
 	}
 
-	wstring& Hill(bool mode) //  люч- матрица
+	wstring& Hill(bool mode) //  люч- матрица // –≈јЋ»«ќ¬ј“№
 	{
 
 		return text;
-	}
+	} 
 
 	wstring& Vigenere(bool mode) //  люч- придложение в котором каждое кажда€ буква соотноситс€ к буквам из ввиденого текста
 	{
+		wstring ct = L"";
+		for (int i = 0; i < text.size(); i++)
+			if (mode) { ct += (char)(((int)text[i] - L'A' + (int)key[i] - L'A') % 26) + L'A'; }
+			else { ct += (char)((((int)text[i] - L'A' - (key[i] - L'A')) + 26) % 26) + L'A'; }
 
-		return text;
+		return ct;
 	}
 
 	wstring& Gronsfeld(bool mode) //  люч- ƒлина ключа (K) должна быть равной длине исходного текста. ƒл€ этого циклически записывают ключ до тех пор, пока его длина не будет соответствовать длине исходного текста.
