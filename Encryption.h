@@ -1,8 +1,7 @@
-#pragma once
+п»ї#pragma once
 
-#include <string>
 #include <iostream>
-
+#include <string>
 
 using namespace std;
 
@@ -36,8 +35,16 @@ public:
 
 		return 0;
 	}
+	
+	inline int GetLen(wstring s) {
+		int l = 0;
+		for (int i = 0; s[i] != L'\0'; i++) {
+			l++;
+		}
+		return l;
+	}
 
-	wstring& Caesar(bool mode) // Число- ключ сдвига
+	wstring& Caesar(bool mode) // Р§РёСЃР»Рѕ- РєР»СЋС‡ СЃРґРІРёРіР°
 	{
 		unsigned int k = toInteger(key);
 
@@ -71,7 +78,7 @@ public:
 		return result;
 	}
 
-	wstring& Vernam(bool mode) // Ключ- текст
+	wstring& Vernam(bool mode) // РљР»СЋС‡- С‚РµРєСЃС‚
 	{
 		int i, j = 0, sum = 0;
 		wstring ans = L"";
@@ -92,48 +99,88 @@ public:
 		return ans;
 	}
 
-	wstring& Hill(bool mode) // Ключ- матрица // РЕАЛИЗОВАТЬ
+	wstring& Hill(bool mode) // РљР»СЋС‡- РјР°С‚СЂРёС†Р° // Р Р•РђР›РР—РћР’РђРўР¬
 	{
+		if (mode) { return text; }
+		else { return text; }
+	}
 
-		return text;
-	} 
-
-	wstring& Vigenere(bool mode) // Ключ- придложение в котором каждое каждая буква соотносится к буквам из ввиденого текста
+	wstring& Vigenere(bool mode) // РљР»СЋС‡- РїСЂРёРґР»РѕР¶РµРЅРёРµ РІ РєРѕС‚РѕСЂРѕРј РєР°Р¶РґРѕРµ РєР°Р¶РґР°СЏ Р±СѓРєРІР° СЃРѕРѕС‚РЅРѕСЃРёС‚СЃСЏ Рє Р±СѓРєРІР°Рј РёР· РІРІРёРґРµРЅРѕРіРѕ С‚РµРєСЃС‚Р°
 	{
 		wstring ct = L"";
-		for (int i = 0; i < text.size(); i++)
+		for (int i = 0; i < text.size(); i++) {
 			if (mode) { ct += (char)(((int)text[i] - L'A' + (int)key[i] - L'A') % 26) + L'A'; }
-			else { ct += (char)((((int)text[i] - L'A' - (key[i] - L'A')) + 26) % 26) + L'A'; }
-
+			else { ct += (char)((((int)text[i] - L'A' - ((int)key[i] - L'A')) + 26) % 26) + L'A'; }
+		}
 		return ct;
 	}
 
-	wstring& Gronsfeld(bool mode) // Ключ- Длина ключа (K) должна быть равной длине исходного текста. Для этого циклически записывают ключ до тех пор, пока его длина не будет соответствовать длине исходного текста.
+	wstring& Gronsfeld(bool mode) // РљР»СЋС‡- Р”Р»РёРЅР° РєР»СЋС‡Р° (K) РґРѕР»Р¶РЅР° Р±С‹С‚СЊ СЂР°РІРЅРѕР№ РґР»РёРЅРµ РёСЃС…РѕРґРЅРѕРіРѕ С‚РµРєСЃС‚Р°. Р”Р»СЏ СЌС‚РѕРіРѕ С†РёРєР»РёС‡РµСЃРєРё Р·Р°РїРёСЃС‹РІР°СЋС‚ РєР»СЋС‡ РґРѕ С‚РµС… РїРѕСЂ, РїРѕРєР° РµРіРѕ РґР»РёРЅР° РЅРµ Р±СѓРґРµС‚ СЃРѕРѕС‚РІРµС‚СЃС‚РІРѕРІР°С‚СЊ РґР»РёРЅРµ РёСЃС…РѕРґРЅРѕРіРѕ С‚РµРєСЃС‚Р°.
 	{
+		int m_len = GetLen(text);
 
-		return text;
+		if (GetLen(key) < 1)
+		{
+			key = L"0";
+		}
+
+		int ind = 0;
+		while (m_len > GetLen(key)) {
+			key += key[ind];
+			ind++;
+		}
+		wstring encrypted;
+		for (int i = 0; i < m_len; i++) {
+			char ch = text[i];
+			ch -= 97;
+			ch += key[i] - L'0';
+			ch %= 26;
+			ch += 97;
+			encrypted += ch;
+		}
+
+		//Decryption
+		wstring decrypted;
+		for (int i = 0; i < m_len; i++) {
+			char ch = encrypted[i];
+			ch -= 97;
+			ch -= key[i] - L'0';
+			while (ch < 0) {
+				ch += 25;
+			}
+			ch += 97;
+			decrypted += ch;
+		}
+		if (mode)
+		{
+			return encrypted;
+		}
+		else if(!mode) 
+		{
+			return decrypted;
+		}
 	}
 
-	wstring& RSA(bool mode) // Ключ- четырехзначное число
+	wstring& RSA(bool mode) // РљР»СЋС‡- С‡РµС‚С‹СЂРµС…Р·РЅР°С‡РЅРѕРµ С‡РёСЃР»Рѕ
 	{
-
-		return text;
+		if (mode) { return text; }
+		else { return text; }
 	}
 
 
-	wstring& Distributor(bool mode)
+	wstring* Distributor(bool mode)
 	{
-		if (choice == "Caesar cipher") { return ENCRYPTION::Caesar(mode); }
+		if (choice == "Caesar cipher") { return &ENCRYPTION::Caesar(mode); }
 
-		if (choice == "Vernam cipher") { return ENCRYPTION::Vernam(mode); }
+		if (choice == "Vernam cipher") { return &ENCRYPTION::Vernam(mode); }
 
-		if (choice == "Hill cipher") { return ENCRYPTION::Hill(mode); }
+		if (choice == "Hill cipher") { return &ENCRYPTION::Hill(mode); }
 
-		if (choice == "Vigenere cipher") { return ENCRYPTION::Vigenere(mode); }
+		if (choice == "Vigenere cipher") { return &ENCRYPTION::Vigenere(mode); }
 
-		if (choice == "Gronsfeld cipher") { return ENCRYPTION::Gronsfeld(mode); }
+		if (choice == "Gronsfeld cipher") { return &ENCRYPTION::Gronsfeld(mode); }
 
-		if (choice == "RSA") { return ENCRYPTION::RSA(mode); }
+		if (choice == "RSA") { return &ENCRYPTION::RSA(mode); }
 	}
 };
 

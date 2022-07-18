@@ -202,7 +202,7 @@ int main()
 			{
 				if (IntRect(text[3].getGlobalBounds()).contains(Mouse::getPosition(window)))// Encryption
 				{
-					OutputBox.setText(ENCRYPTION.Distributor(true));
+					OutputBox.setText(*ENCRYPTION.Distributor(true));
 					OutputBox.setString();
 					text[3].setStyle(Text::Bold);
 					time[1] = 0;
@@ -210,7 +210,7 @@ int main()
 
 				if (IntRect(text[4].getGlobalBounds()).contains(Mouse::getPosition(window)))// Decryption
 				{
-					OutputBox.setText(ENCRYPTION.Distributor(false));
+					OutputBox.setText(*ENCRYPTION.Distributor(false));
 					OutputBox.setString();
 					text[4].setStyle(Text::Bold);
 					time[1] = 0;
